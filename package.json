@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/leedoughty/support-bank#readme",
   "dependencies": {
+    "csv-parse": "^4.10.1",
     "moment": "^2.27.0",
     "readline-sync": "1.4.10"
   }

@@ -1,15 +1,25 @@
 const fs = require("fs");
-const moment = require("moment");
+const parse = require("csv-parse/lib/es5");
+
+function output(err, output) {
+  if (err) throw err;
+  console.log(output);
+}
 
 fs.readFile("Transactions2014.csv", (err, data) => {
   if (err) throw err;
-  console.log(data.toString());
+  const file = data.toString();
+  parse(
+    file,
+    { columns: true, skip_empty_lines: true, record_delimiter: "\n" },
+    output
+  );
 });
 
 class Account {
-  constructor(name, balance = 0) {
+  constructor(name) {
     this.name = name;
-    this.balance = balance;
+    this.balance = 0;
   }
 }
 
