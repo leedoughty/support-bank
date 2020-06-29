@@ -3,7 +3,27 @@ const parse = require("csv-parse/lib/es5");
 
 function output(err, output) {
   if (err) throw err;
-  console.log(output);
+  let mappedOutput = output.map(
+    (element) =>
+      new Transaction(
+        element.Date,
+        element.From,
+        element.To,
+        element.Narrative,
+        element.Amount
+      )
+  );
+
+  let outgoingAmount = {};
+
+  mappedOutput.forEach(function (el) {
+    if (outgoingAmount.hasOwnProperty(el.from)) {
+      outgoingAmount[el.from] = outgoingAmount[el.from] + parseFloat(el.amount);
+    } else {
+      outgoingAmount[el.from] = parseFloat(el.amount);
+    }
+  });
+  console.log(outgoingAmount);
 }
 
 fs.readFile("Transactions2014.csv", (err, data) => {
