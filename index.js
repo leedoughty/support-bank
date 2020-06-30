@@ -1,5 +1,6 @@
 const fs = require("fs");
 const parse = require("csv-parse/lib/es5");
+const readlineSync = require("readline-sync");
 
 function output(err, output) {
   if (err) throw err;
@@ -18,22 +19,19 @@ function output(err, output) {
 
   mappedOutput.forEach(function (transaction) {
     if (!accountMap.hasOwnProperty(transaction.from)) {
-      accountMap[transaction.from] = 0;
+      accountMap[transaction.from] = new Account(transaction.from);
     }
     if (!accountMap.hasOwnProperty(transaction.to)) {
-      accountMap[transaction.to] = 0;
+      accountMap[transaction.to] = new Account(transaction.to);
     }
-    if (
-      accountMap.hasOwnProperty(transaction.from) ||
-      accountMap.hasOwnProperty(transaction.to)
-    ) {
-      accountMap[transaction.from] =
-        accountMap[transaction.from] - parseFloat(transaction.amount);
-      accountMap[transaction.to] =
-        accountMap[transaction.to] + parseFloat(transaction.amount);
-    }
+    accountMap[transaction.from].balance -= parseFloat(transaction.amount);
+    accountMap[transaction.to].balance += parseFloat(transaction.amount);
   });
-  console.log(accountMap);
+  const userInput = readlineSync.prompt();
+
+  if (userInput === "List All") {
+    console.log(accountMap);
+  }
 }
 
 fs.readFile("Transactions2014.csv", (err, data) => {
