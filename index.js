@@ -14,16 +14,26 @@ function output(err, output) {
       )
   );
 
-  let outgoingAmount = {};
+  let accountMap = {};
 
-  mappedOutput.forEach(function (el) {
-    if (outgoingAmount.hasOwnProperty(el.from)) {
-      outgoingAmount[el.from] = outgoingAmount[el.from] + parseFloat(el.amount);
-    } else {
-      outgoingAmount[el.from] = parseFloat(el.amount);
+  mappedOutput.forEach(function (transaction) {
+    if (!accountMap.hasOwnProperty(transaction.from)) {
+      accountMap[transaction.from] = 0;
+    }
+    if (!accountMap.hasOwnProperty(transaction.to)) {
+      accountMap[transaction.to] = 0;
+    }
+    if (
+      accountMap.hasOwnProperty(transaction.from) ||
+      accountMap.hasOwnProperty(transaction.to)
+    ) {
+      accountMap[transaction.from] =
+        accountMap[transaction.from] - parseFloat(transaction.amount);
+      accountMap[transaction.to] =
+        accountMap[transaction.to] + parseFloat(transaction.amount);
     }
   });
-  console.log(outgoingAmount);
+  console.log(accountMap);
 }
 
 fs.readFile("Transactions2014.csv", (err, data) => {
